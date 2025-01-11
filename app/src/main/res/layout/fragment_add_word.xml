@@ -8,12 +8,12 @@
         tools:context=".ui.fragment.AddWordFragment"
 >
     <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:id="@+id/constraintLayout"
     >
         <Button
                 android:id="@+id/btn_new"
