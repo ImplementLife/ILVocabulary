@@ -60,7 +60,7 @@
     >
         <EditText
                 android:id="@+id/et_learn_word"
-                android:text="Learn Word"
+                android:hint="Learn Word"
                 android:inputType="text"
 
                 android:layout_width="0dp"
@@ -74,7 +74,7 @@
         />
         <EditText
                 android:id="@+id/et_native_word"
-                android:text="Native Word"
+                android:hint="Native Word"
                 android:inputType="text"
 
                 android:layout_width="0dp"
