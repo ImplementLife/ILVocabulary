@@ -22,9 +22,11 @@
     <color name="background_secondary_night">#7C7C7C</color>
     <color name="background_secondary_variant_night">#858A69</color>
     <color name="card_primary_night">#DAB1B1</color>
+    <color name="soft_white">#EAEAEA</color>
 
 
     <color name="green">#70B137</color>
+    <color name="orange">#FF6D00</color>
     <color name="red">#D13434</color>
 
     <color name="none">#00000000</color>
