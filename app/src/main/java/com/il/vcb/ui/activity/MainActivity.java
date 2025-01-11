@@ -9,6 +9,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.il.vcb.R;
+import com.il.vcb.data.jpa.provide.AppDatabase;
 import com.il.vcb.databinding.ActivityMainBinding;
 
 import java.util.Objects;
@@ -28,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
         //hide top bar with app name
         Objects.requireNonNull(getSupportActionBar()).hide();
         instance = this;
+
+        AppDatabase.getInstance(this);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());

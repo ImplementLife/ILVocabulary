@@ -16,4 +16,7 @@ public interface WordDao extends RestDao<Integer, Word> {
 
     @Query("SELECT * FROM il_word")
     List<Word> getAll();
+
+    @Query("SELECT COUNT(*) FROM il_word")
+    int getCount();
 }

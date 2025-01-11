@@ -22,7 +22,7 @@ import com.il.vcb.data.jpa.entity.Word;
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DB_NAME = "il_vcb";
     private static AppDatabase instance;
-    public static AppDatabase init(Context context) {
+    public static AppDatabase getInstance(Context context) {
         if (instance == null || !instance.isOpen()) {
             instance = Room.databaseBuilder(context, AppDatabase.class, DB_NAME).build();
         }
