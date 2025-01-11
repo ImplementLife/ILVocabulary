@@ -6,7 +6,7 @@ import androidx.room.Entity;
 public class Word extends EntityWithId {
     private String learnLangWord;
     private String nativeLangWord;
-    private int completeRepeats;
+    private int countCompleteRepeats;
     private int mistakes;
 
     public String getLearnLangWord() {
@@ -25,12 +25,12 @@ public class Word extends EntityWithId {
         this.nativeLangWord = nativeLangWord;
     }
 
-    public int getCompleteRepeats() {
-        return completeRepeats;
+    public int getCountCompleteRepeats() {
+        return countCompleteRepeats;
     }
 
-    public void setCompleteRepeats(int completeRepeats) {
-        this.completeRepeats = completeRepeats;
+    public void setCountCompleteRepeats(int countCompleteRepeats) {
+        this.countCompleteRepeats = countCompleteRepeats;
     }
 
     public int getMistakes() {

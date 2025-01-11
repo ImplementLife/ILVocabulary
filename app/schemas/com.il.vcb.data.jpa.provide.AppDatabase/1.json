@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "a70924e93008f355b03b30532de0fe5a",
+    "identityHash": "cd09c262c5659ce632c274efd49f9cd1",
     "entities": [
       {
         "tableName": "il_word",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`learnLangWord` TEXT, `nativeLangWord` TEXT, `completeRepeats` INTEGER NOT NULL, `mistakes` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT, `serverId` INTEGER DEFAULT -1)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`learnLangWord` TEXT, `nativeLangWord` TEXT, `countCompleteRepeats` INTEGER NOT NULL, `mistakes` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT, `serverId` INTEGER DEFAULT -1)",
         "fields": [
           {
             "fieldPath": "learnLangWord",
@@ -21,8 +21,8 @@
             "notNull": false
           },
           {
-            "fieldPath": "completeRepeats",
-            "columnName": "completeRepeats",
+            "fieldPath": "countCompleteRepeats",
+            "columnName": "countCompleteRepeats",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -59,7 +59,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a70924e93008f355b03b30532de0fe5a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cd09c262c5659ce632c274efd49f9cd1')"
     ]
   }
 }
