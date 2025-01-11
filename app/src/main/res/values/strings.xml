@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Vocab</string>
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="nav_bar_title_settings">Settings</string>
+    <string name="nav_bar_title_add">Add word</string>
+    <string name="nav_bar_title_title_learn">Learn</string>
 </resources>
