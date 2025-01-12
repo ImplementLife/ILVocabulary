@@ -19,4 +19,7 @@ public interface WordDao extends RestDao<Integer, Word> {
 
     @Query("SELECT COUNT(*) FROM il_word")
     int getCount();
+
+    @Query("SELECT * FROM il_word ORDER BY countCompleteRepeats DESC LIMIT 10")
+    List<Word> getSomeByCountCompleteRepeatsDesc();
 }
