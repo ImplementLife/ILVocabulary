@@ -7,6 +7,7 @@ import com.il.vcb.R;
 import com.il.vcb.data.jpa.entity.Word;
 import com.il.vcb.data.jpa.provide.AppDatabase;
 import com.il.vcb.data.jpa.provide.WordDao;
+import com.il.vcb.service.valid.WordValidService;
 import com.il.vcb.ui.activity.MainActivity;
 import com.il.vcb.ui.custom.component.BaseFragment;
 
@@ -37,8 +38,9 @@ public class AddWordFragment extends BaseFragment {
         });
         btnSave.setOnClickListener(v -> {
             Word word = new Word();
-            word.setLearnLangWord(etLearnWord.getText().toString());
-            word.setNativeLangWord(etNativeWord.getText().toString());
+            word.setLearnLangWord(etLearnWord.getText().toString().trim());
+            word.setNativeLangWord(etNativeWord.getText().toString().trim());
+            if (!WordValidService.isValid(word)) return;
             runAsync(() -> {
                 wordDao.insert(word);
                 updateCountOfWords();
