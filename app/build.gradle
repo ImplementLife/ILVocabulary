@@ -9,8 +9,8 @@ android {
         applicationId "com.il.vcb"
         minSdk 26
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "0.0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
@@ -21,9 +21,21 @@ android {
     }
 
     buildTypes {
+        debug {
+            versionNameSuffix "-debug"
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    applicationVariants.all { variant ->
+        if (variant.buildType.name == "debug") {
+            variant.outputs.all { output ->
+                def newName = "vocab_${defaultConfig.versionName}-debug.apk"
+                output.outputFileName = newName
+            }
         }
     }
     compileOptions {
