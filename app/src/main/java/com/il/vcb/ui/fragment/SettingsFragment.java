@@ -3,28 +3,30 @@ package com.il.vcb.ui.fragment;
 import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.widget.Button;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import com.il.vcb.R;
 import com.il.vcb.data.jpa.entity.Word;
 import com.il.vcb.data.jpa.provide.AppDatabase;
 import com.il.vcb.data.jpa.provide.WordDao;
 import com.il.vcb.ui.activity.MainActivity;
 import com.il.vcb.ui.custom.component.BaseFragment;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
+import static androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import static com.il.vcb.service.valid.WordValidService.isValid;
 
 public class SettingsFragment extends BaseFragment {
@@ -34,67 +36,109 @@ public class SettingsFragment extends BaseFragment {
         super(R.layout.fragment_settings);
     }
 
-    private ActivityResultLauncher<Intent> filePickerLauncher;
+    private ActivityResultLauncher<Intent> fileLoadLauncher;
+    private ActivityResultLauncher<Intent> fileSaverLauncher;
 
     @Override
     protected void init() {
+        Button clearDB = findViewById(R.id.btn_clear_db);
+        clearDB.setOnClickListener(v -> runAsync(wordDao::deleteAll));
+
         Button btnImport = findViewById(R.id.btn_import);
         defineFilePicker(btnImport);
 
-        Button clearDB = findViewById(R.id.btn_clear_db);
-        clearDB.setOnClickListener(v -> {
-            runAsync(wordDao::deleteAll);
-        });
-
         Button btnExport = findViewById(R.id.btn_export);
-        btnExport.setOnClickListener(v -> {
-
-        });
+        defineFileSaver(btnExport);
     }
 
-    private void defineFilePicker(Button button) {
-        button.setOnClickListener(v -> openFilePicker());
-        filePickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                Uri fileUri = result.getData().getData();
+    private void requestSaveFile() {
+        checkAndRequestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-                // Disable the button to prevent multiple file selection
-                button.setEnabled(false);
-
-                runAsync(() -> {
-                    try {
-                        // Use ContentResolver to open the file
-                        ContentResolver resolver = Objects.requireNonNull(getActivity()).getContentResolver();
-                        InputStream inputStream = resolver.openInputStream(fileUri);
-                        if (inputStream == null) {
-                            // Handle the case where inputStream is null
-                            post(() -> button.setEnabled(true));
-                            return;
-                        }
-
-                        // Read the file (assuming you're using Apache POI or a similar library to process Excel files)
-                        addWordsFromFile(inputStream);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    } finally {
-                        post(() -> button.setEnabled(true));  // Re-enable the button on error
-                    }
-                });
-            }
-        });
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        intent.putExtra(Intent.EXTRA_TITLE, "words.xlsx");
+        fileSaverLauncher.launch(intent);
     }
 
-    private void openFilePicker() {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(),
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-        }
+    private void requestLoadFile() {
+        checkAndRequestPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
 
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        filePickerLauncher.launch(intent);
+        fileLoadLauncher.launch(intent);
+    }
+
+    private void defineFileSaver(Button button) {
+        fileSaverLauncher = registerForActivityResult(new StartActivityForResult(), result -> {
+            if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                Uri fileSaverUri = result.getData().getData();
+                exportWordsToFile(button, fileSaverUri);
+            }
+        });
+        button.setOnClickListener(v -> requestSaveFile());
+    }
+
+    private void exportWordsToFile(Button button, Uri uri) {
+        button.setEnabled(false);
+        runAsync(() -> {
+            try {
+                List<Word> words = wordDao.getAll();
+                Workbook workbook = WorkbookFactory.create(true);
+                Sheet sheet = workbook.createSheet("Words");
+
+                Row headerRow = sheet.createRow(0);
+                headerRow.createCell(0).setCellValue("LearnLangWord");
+                headerRow.createCell(1).setCellValue("NativeLangWord");
+                headerRow.createCell(2).setCellValue("CountCompleteRepeats");
+                headerRow.createCell(3).setCellValue("CountMistakes");
+
+                for (int i = 0; i < words.size() - 200; i++) {
+                    Row row = sheet.createRow(i + 1);
+                    row.createCell(0).setCellValue(words.get(i).getLearnLangWord());
+                    row.createCell(1).setCellValue(words.get(i).getNativeLangWord());
+                    row.createCell(2).setCellValue(words.get(i).getCountCompleteRepeats());
+                    row.createCell(3).setCellValue(words.get(i).getCountMistakes());
+                }
+
+                if (uri != null) {
+                    try (OutputStream outputStream = getContentResolver().openOutputStream(uri)) {
+                        workbook.write(outputStream);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        post(() -> button.setEnabled(true));
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                post(() -> button.setEnabled(true));
+            }
+        });
+    }
+
+    private void defineFilePicker(Button button) {
+        fileLoadLauncher = registerForActivityResult(new StartActivityForResult(), result -> {
+            if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                Uri fileUri = result.getData().getData();
+                button.setEnabled(false);
+
+                runAsync(() -> {
+                    try {
+                        ContentResolver resolver = getContentResolver();
+                        InputStream inputStream = resolver.openInputStream(fileUri);
+                        addWordsFromFile(inputStream);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        post(() -> button.setEnabled(true));
+                    }
+                });
+            }
+        });
+        button.setOnClickListener(v -> requestLoadFile());
     }
 
     private void addWordsFromFile(InputStream inputStream) throws IOException {
@@ -112,6 +156,10 @@ public class SettingsFragment extends BaseFragment {
 
         // Insert all words into the database
         wordDao.insertAll(lw);
+    }
+
+    private ContentResolver getContentResolver() {
+        return Objects.requireNonNull(getActivity()).getContentResolver();
     }
 
 }

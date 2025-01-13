@@ -1,12 +1,16 @@
 package com.il.vcb.ui.custom.component;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class BaseFragment extends Fragment {
@@ -90,5 +94,23 @@ public abstract class BaseFragment extends Fragment {
         boolean result = root.postDelayed(action, delayMillis);
         if (!result) Log.e("postDelayed", "task doesn't performed complete");
         return result;
+    }
+
+    protected boolean isPermissionGranted(String permission) {
+        return checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    protected int checkSelfPermission(String permission) {
+        return ContextCompat.checkSelfPermission(Objects.requireNonNull(getContext()), permission);
+    }
+
+    protected void requestPermissions(String permission) {
+        ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()), new String[]{permission}, 1);
+    }
+
+    protected void checkAndRequestPermission(String permission) {
+        if (!isPermissionGranted(permission)) {
+            requestPermissions(permission);
+        }
     }
 }
