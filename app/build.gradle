@@ -10,7 +10,7 @@ android {
         minSdk 26
         targetSdk 33
         versionCode 2
-        versionName "0.0.3"
+        versionName "0.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
@@ -61,6 +61,11 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel:2.5.1"
     implementation 'androidx.room:room-common:2.5.1'
     implementation 'androidx.room:room-runtime:2.5.1'
+
+    // https://mvnrepository.com/artifact/org.apache.poi/poi
+    implementation group: 'org.apache.poi', name: 'poi', version: '5.2.3'
+    // https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
+    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.3'
 
 
     testImplementation 'junit:junit:4.+'

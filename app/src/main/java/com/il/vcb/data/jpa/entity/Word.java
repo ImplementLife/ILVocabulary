@@ -12,13 +12,6 @@ public class Word extends EntityWithId {
     public Word() {
     }
 
-    public Word(String apple, String яблуко, int i, int i1) {
-        learnLangWord = apple;
-        nativeLangWord = яблуко;
-        countCompleteRepeats = i;
-        mistakes = i1;
-    }
-
     public String getLearnLangWord() {
         return learnLangWord;
     }

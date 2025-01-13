@@ -1,6 +1,7 @@
 package com.il.vcb.data.jpa.provide;
 
 import androidx.room.Dao;
+import androidx.room.Insert;
 import androidx.room.Query;
 import com.il.vcb.data.jpa.entity.Word;
 
@@ -22,4 +23,10 @@ public interface WordDao extends RestDao<Integer, Word> {
 
     @Query("SELECT * FROM il_word ORDER BY countCompleteRepeats ASC LIMIT 10")
     List<Word> getSomeByCountCompleteRepeatsDesc();
+
+    @Query("DELETE FROM il_word")
+    void deleteAll();
+
+    @Insert
+    void insertAll(List<Word> words);
 }
