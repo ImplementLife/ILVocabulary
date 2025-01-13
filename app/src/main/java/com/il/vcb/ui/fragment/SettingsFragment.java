@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
-import static com.il.vcb.service.util.WorkbookUtil.read;
 import static com.il.vcb.service.valid.WordValidService.isValid;
 
 public class SettingsFragment extends BaseFragment {
@@ -39,24 +38,28 @@ public class SettingsFragment extends BaseFragment {
 
     @Override
     protected void init() {
-        Button loadFileButton = findViewById(R.id.btn_load_data_from_file);
-        loadFileButton.setOnClickListener(v -> openFilePicker());
-        defineFilePicker(loadFileButton);
+        Button btnImport = findViewById(R.id.btn_import);
+        defineFilePicker(btnImport);
 
         Button clearDB = findViewById(R.id.btn_clear_db);
         clearDB.setOnClickListener(v -> {
             runAsync(wordDao::deleteAll);
         });
 
+        Button btnExport = findViewById(R.id.btn_export);
+        btnExport.setOnClickListener(v -> {
+
+        });
     }
 
-    private void defineFilePicker(Button loadFileButton) {
+    private void defineFilePicker(Button button) {
+        button.setOnClickListener(v -> openFilePicker());
         filePickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                 Uri fileUri = result.getData().getData();
 
                 // Disable the button to prevent multiple file selection
-                loadFileButton.setEnabled(false);
+                button.setEnabled(false);
 
                 runAsync(() -> {
                     try {
@@ -65,7 +68,7 @@ public class SettingsFragment extends BaseFragment {
                         InputStream inputStream = resolver.openInputStream(fileUri);
                         if (inputStream == null) {
                             // Handle the case where inputStream is null
-                            post(() -> loadFileButton.setEnabled(true));
+                            post(() -> button.setEnabled(true));
                             return;
                         }
 
@@ -74,11 +77,24 @@ public class SettingsFragment extends BaseFragment {
                     } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
-                        post(() -> loadFileButton.setEnabled(true));  // Re-enable the button on error
+                        post(() -> button.setEnabled(true));  // Re-enable the button on error
                     }
                 });
             }
         });
+    }
+
+    private void openFilePicker() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        }
+
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        filePickerLauncher.launch(intent);
     }
 
     private void addWordsFromFile(InputStream inputStream) throws IOException {
@@ -96,19 +112,6 @@ public class SettingsFragment extends BaseFragment {
 
         // Insert all words into the database
         wordDao.insertAll(lw);
-    }
-
-    private void openFilePicker() {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(),
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-        }
-
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        filePickerLauncher.launch(intent);
     }
 
 }
