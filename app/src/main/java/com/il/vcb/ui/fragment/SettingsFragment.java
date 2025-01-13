@@ -94,7 +94,7 @@ public class SettingsFragment extends BaseFragment {
                 headerRow.createCell(2).setCellValue("CountCompleteRepeats");
                 headerRow.createCell(3).setCellValue("CountMistakes");
 
-                for (int i = 0; i < words.size() - 200; i++) {
+                for (int i = 0; i < words.size(); i++) {
                     Row row = sheet.createRow(i + 1);
                     row.createCell(0).setCellValue(words.get(i).getLearnLangWord());
                     row.createCell(1).setCellValue(words.get(i).getNativeLangWord());
