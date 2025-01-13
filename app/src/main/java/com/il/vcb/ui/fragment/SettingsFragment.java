@@ -18,9 +18,11 @@ import com.il.vcb.ui.activity.MainActivity;
 import com.il.vcb.ui.custom.component.BaseFragment;
 import org.apache.poi.ss.usermodel.*;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 import static com.il.vcb.service.util.WorkbookUtil.read;
@@ -39,12 +41,16 @@ public class SettingsFragment extends BaseFragment {
     protected void init() {
         Button loadFileButton = findViewById(R.id.btn_load_data_from_file);
         loadFileButton.setOnClickListener(v -> openFilePicker());
+        defineFilePicker(loadFileButton);
 
         Button clearDB = findViewById(R.id.btn_clear_db);
         clearDB.setOnClickListener(v -> {
             runAsync(wordDao::deleteAll);
         });
 
+    }
+
+    private void defineFilePicker(Button loadFileButton) {
         filePickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                 Uri fileUri = result.getData().getData();
@@ -55,7 +61,7 @@ public class SettingsFragment extends BaseFragment {
                 runAsync(() -> {
                     try {
                         // Use ContentResolver to open the file
-                        ContentResolver resolver = getActivity().getContentResolver();
+                        ContentResolver resolver = Objects.requireNonNull(getActivity()).getContentResolver();
                         InputStream inputStream = resolver.openInputStream(fileUri);
                         if (inputStream == null) {
                             // Handle the case where inputStream is null
@@ -64,59 +70,33 @@ public class SettingsFragment extends BaseFragment {
                         }
 
                         // Read the file (assuming you're using Apache POI or a similar library to process Excel files)
-                        Workbook workbook = WorkbookFactory.create(inputStream);  // Using WorkbookFactory to create the workbook
-                        Sheet sheet = workbook.getSheetAt(0);
-                        List<Word> lw = new LinkedList<>();
-                        for (Row row : sheet) {
-                            Word word = new Word();
-                            word.setLearnLangWord(row.getCell(0).getStringCellValue().trim());
-                            word.setNativeLangWord(row.getCell(1).getStringCellValue().trim());
-                            if (isValid(word)) {
-                                lw.add(word);
-                            }
-                        }
-
-                        // Insert all words into the database
-                        wordDao.insertAll(lw);
-
-                        // Re-enable the button after the task is done
-                        post(() -> loadFileButton.setEnabled(true));
-
+                        addWordsFromFile(inputStream);
                     } catch (Exception e) {
                         e.printStackTrace();
+                    } finally {
                         post(() -> loadFileButton.setEnabled(true));  // Re-enable the button on error
                     }
                 });
             }
         });
+    }
 
-        // Initialize the launcher
-        /*filePickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                Uri fileUri = result.getData().getData();
-                String filePath = fileUri.getPath();
-
-                loadFileButton.setEnabled(false);
-                runAsync(() -> {
-                    Workbook workbook = read(filePath);
-                    Sheet sheet = workbook.getSheetAt(0);
-                    List<Word> lw = new LinkedList<>();
-                    for (Row row : sheet) {
-                        Word word = new Word();
-                        word.setLearnLangWord(row.getCell(0).getStringCellValue().trim());
-                        word.setNativeLangWord(row.getCell(1).getStringCellValue().trim());
-                        if (isValid(word)) {
-                            lw.add(word);
-                        }
-                    }
-                    wordDao.insertAll(lw);
-                    post(() -> {
-                        loadFileButton.setEnabled(true);
-                    });
-                });
+    private void addWordsFromFile(InputStream inputStream) throws IOException {
+        Workbook workbook = WorkbookFactory.create(inputStream);  // Using WorkbookFactory to create the workbook
+        Sheet sheet = workbook.getSheetAt(0);
+        List<Word> lw = new LinkedList<>();
+        for (Row row : sheet) {
+            Word word = new Word();
+            word.setLearnLangWord(row.getCell(0).getStringCellValue().trim());
+            word.setNativeLangWord(row.getCell(1).getStringCellValue().trim());
+            if (isValid(word)) {
+                lw.add(word);
             }
-        });
-*/    }
+        }
+
+        // Insert all words into the database
+        wordDao.insertAll(lw);
+    }
 
     private void openFilePicker() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
