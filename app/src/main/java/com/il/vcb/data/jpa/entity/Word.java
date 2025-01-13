@@ -7,7 +7,7 @@ public class Word extends EntityWithId {
     private String learnLangWord;
     private String nativeLangWord;
     private int countCompleteRepeats;
-    private int mistakes;
+    private int countMistakes;
 
     public Word() {
     }
@@ -36,11 +36,11 @@ public class Word extends EntityWithId {
         this.countCompleteRepeats = countCompleteRepeats;
     }
 
-    public int getMistakes() {
-        return mistakes;
+    public int getCountMistakes() {
+        return countMistakes;
     }
 
-    public void setMistakes(int mistakes) {
-        this.mistakes = mistakes;
+    public void setCountMistakes(int countMistakes) {
+        this.countMistakes = countMistakes;
     }
 }

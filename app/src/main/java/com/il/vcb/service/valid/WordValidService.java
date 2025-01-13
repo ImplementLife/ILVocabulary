@@ -7,6 +7,6 @@ public class WordValidService {
         return word.getLearnLangWord().trim().length() > 0
             && word.getNativeLangWord().trim().length() > 0
             && word.getCountCompleteRepeats() >= 0
-            && word.getMistakes() >= 0;
+            && word.getCountMistakes() >= 0;
     }
 }
