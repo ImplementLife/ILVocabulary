@@ -1,6 +1,7 @@
 package com.il.vcb.ui.fragment;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
@@ -42,13 +43,21 @@ public class SettingsFragment extends BaseFragment {
     @Override
     protected void init() {
         Button clearDB = findViewById(R.id.btn_clear_db);
-        clearDB.setOnClickListener(v -> runAsync(wordDao::deleteAll));
+        clearDB.setOnClickListener(v -> deleteAll());
 
         Button btnImport = findViewById(R.id.btn_import);
         defineFilePicker(btnImport);
 
         Button btnExport = findViewById(R.id.btn_export);
         defineFileSaver(btnExport);
+    }
+
+    private void deleteAll() {
+        new AlertDialog.Builder(getContext())
+            .setMessage("Are you sure?")
+            .setPositiveButton("Yes", (dialog, which) -> runAsync(wordDao::deleteAll))
+            .setNegativeButton("No", (dialog, which) -> {})
+            .show();
     }
 
     private void requestSaveFile() {
