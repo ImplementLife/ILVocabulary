@@ -1,8 +1,5 @@
 package com.il.vcb.ui.fragment;
 
-import android.widget.Button;
-import android.widget.LinearLayout;
-
 import com.il.vcb.R;
 import com.il.vcb.data.jpa.entity.Word;
 import com.il.vcb.data.jpa.provide.AppDatabase;
@@ -10,8 +7,11 @@ import com.il.vcb.data.jpa.provide.WordDao;
 import com.il.vcb.service.WordLearnLevelService;
 import com.il.vcb.ui.activity.MainActivity;
 import com.il.vcb.ui.custom.component.BaseFragment;
+import com.il.vcb.ui.custom.component.CustomRecyclerView;
+import com.il.vcb.ui.view.WordBtnView;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class LearnFragment extends BaseFragment {
     private static final WordDao wordDao = AppDatabase.getInstance(MainActivity.getInstance()).getWordDao();
@@ -28,22 +28,25 @@ public class LearnFragment extends BaseFragment {
 
     @Override
     public void init() {
-        LinearLayout learnColumn = findViewById(R.id.learnColumn);
-        LinearLayout nativeColumn = findViewById(R.id.nativeColumn);
+        CustomRecyclerView learnColumn = findViewById(R.id.learnColumn);
+        CustomRecyclerView nativeColumn = findViewById(R.id.nativeColumn);
 
         runAsync(() -> {
             loadWords();
             prepareButtonWrappers();
             post(() -> {
                 Collections.shuffle(buttonWrappers);
-                for (ButtonWrapper wrapper : buttonWrappers) {
-                    learnColumn.addView(wrapper.learnButton);
-                }
+                List<WordBtnView> learnButtons = buttonWrappers.stream()
+                    .map(e -> e.learnButton)
+                    .collect(Collectors.toList());
+                learnColumn.addAll(learnButtons);
 
                 Collections.shuffle(buttonWrappers);
-                for (ButtonWrapper wrapper : buttonWrappers) {
-                    nativeColumn.addView(wrapper.nativeButton);
-                }
+
+                List<WordBtnView> nativeButtons = buttonWrappers.stream()
+                    .map(e -> e.nativeButton)
+                    .collect(Collectors.toList());
+                nativeColumn.addAll(nativeButtons);
             });
         });
     }
@@ -57,14 +60,14 @@ public class LearnFragment extends BaseFragment {
             Word word = words.get(i);
             ButtonWrapper wrapper = new ButtonWrapper();
 
-            Button learnButton = new Button(getContext());
+            WordBtnView learnButton = new WordBtnView();
             learnButton.setText(word.getLearnLangWord());
-            learnButton.setOnClickListener(v -> handleButtonClick(wrapper, learnButton));
+            learnButton.setOnClickListener(() -> handleButtonClick(wrapper, learnButton));
             wrapper.learnButton = learnButton;
 
-            Button nativeButton = new Button(getContext());
+            WordBtnView nativeButton = new WordBtnView();
             nativeButton.setText(word.getNativeLangWord());
-            nativeButton.setOnClickListener(v -> handleButtonClick(wrapper, nativeButton));
+            nativeButton.setOnClickListener(() -> handleButtonClick(wrapper, nativeButton));
             wrapper.nativeButton = nativeButton;
 
             wrapper.index = i;
@@ -75,7 +78,7 @@ public class LearnFragment extends BaseFragment {
         }
     }
 
-    private void handleButtonClick(ButtonWrapper wrapper, Button button) {
+    private void handleButtonClick(ButtonWrapper wrapper, WordBtnView button) {
         if (lastSelectedWrapper == null) {
             lastSelectedWrapper = wrapper;
             button.setEnabled(false);
@@ -105,8 +108,8 @@ public class LearnFragment extends BaseFragment {
     }
 
     private static class ButtonWrapper {
-        Button learnButton;
-        Button nativeButton;
+        WordBtnView learnButton;
+        WordBtnView nativeButton;
         Word word;
         int index;
     }
