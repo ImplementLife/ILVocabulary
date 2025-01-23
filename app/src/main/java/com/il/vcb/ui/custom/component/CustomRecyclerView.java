@@ -3,17 +3,15 @@ package com.il.vcb.ui.custom.component;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.ViewGroup;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.il.vcb.ui.activity.MainActivity;
 import com.il.vcb.ui.custom.adapter.RecyclerViewListAdapter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
 import java.util.List;
 
-import static com.il.vcb.ui.custom.adapter.RecyclerViewListAdapter.*;
+import static com.il.vcb.ui.custom.adapter.RecyclerViewListAdapter.ViewDataBinder;
 
 public class CustomRecyclerView extends RecyclerView {
     private RecyclerViewListAdapter adapter = new RecyclerViewListAdapter();
@@ -47,32 +45,23 @@ public class CustomRecyclerView extends RecyclerView {
         return adapter.getItemViewType(position);
     }
 
-    @NotNull
-    public Holder onCreateViewHolder(@NotNull ViewGroup parent, int viewId) {
-        return adapter.onCreateViewHolder(parent, viewId);
-    }
-
-    public void onBindViewHolder(Holder holder, int position) {
-        adapter.onBindViewHolder(holder, position);
-    }
-
     public int getItemCount() {
         return adapter.getItemCount();
     }
 
-    public void add(Data item) {
+    public void add(ViewDataBinder item) {
         adapter.add(item);
     }
 
-    public void add(Data item, int position) {
+    public void add(ViewDataBinder item, int position) {
         adapter.add(item, position);
     }
 
-    public void addAll(List<? extends Data> all) {
+    public void addAll(List<? extends ViewDataBinder> all) {
         adapter.addAll(all);
     }
 
-    public void replaceAll(List<Data> replace) {
+    public void replaceAll(List<ViewDataBinder> replace) {
         adapter.replaceAll(replace);
     }
 
@@ -85,15 +74,15 @@ public class CustomRecyclerView extends RecyclerView {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void sort(Comparator<? super Data> comparator) {
+    public void sort(Comparator<? super ViewDataBinder> comparator) {
         adapter.sort(comparator);
     }
 
-    public List<Data> getData() {
-        return adapter.getData();
+    public List<ViewDataBinder> getData() {
+        return adapter.getViewDataBinders();
     }
 
-    public Data get(int position) {
+    public ViewDataBinder get(int position) {
         return adapter.get(position);
     }
 }

@@ -15,7 +15,6 @@ import java.util.concurrent.CompletableFuture;
 
 public abstract class BaseFragment extends Fragment {
     private int layout;
-    protected LayoutInflater inflater;
     protected View root;
 
     public BaseFragment() {}
@@ -38,12 +37,6 @@ public abstract class BaseFragment extends Fragment {
         argumentProcessing(arguments);
     }
 
-    protected void init() {
-    }
-
-    protected void setInflater(LayoutInflater inflater) {
-        this.inflater = inflater;
-    }
 
     protected void runAsync(Runnable runnable) {
         CompletableFuture.runAsync(() -> {
@@ -56,7 +49,6 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public View createView(int layout, LayoutInflater inflater, ViewGroup container) {
-        this.inflater = inflater;
         View view = inflater.inflate(layout, container, false);
         root = view;
         return view;
@@ -70,8 +62,8 @@ public abstract class BaseFragment extends Fragment {
         return getView().findViewById(id);
     }
 
-    protected void argumentProcessing(Bundle arguments) {
-    }
+    protected void init() {}
+    protected void argumentProcessing(Bundle arguments) {}
 
     /**
      * @return root view
@@ -108,9 +100,10 @@ public abstract class BaseFragment extends Fragment {
         ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()), new String[]{permission}, 1);
     }
 
-    protected void checkAndRequestPermission(String permission) {
+    protected boolean checkAndRequestPermission(String permission) {
         if (!isPermissionGranted(permission)) {
             requestPermissions(permission);
         }
+        return isPermissionGranted(permission);
     }
 }

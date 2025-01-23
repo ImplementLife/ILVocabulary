@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.Button;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.core.app.ActivityCompat;
 import com.il.vcb.R;
 import com.il.vcb.data.jpa.entity.Word;
 import com.il.vcb.data.jpa.provide.AppDatabase;
@@ -61,22 +60,24 @@ public class SettingsFragment extends BaseFragment {
     }
 
     private void requestSaveFile() {
-        checkAndRequestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("*/*");
-        intent.putExtra(Intent.EXTRA_TITLE, "words.xlsx");
-        fileSaverLauncher.launch(intent);
+        boolean permissionGranted = checkAndRequestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permissionGranted) {
+            Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("*/*");
+            intent.putExtra(Intent.EXTRA_TITLE, "words.xlsx");
+            fileSaverLauncher.launch(intent);
+        }
     }
 
     private void requestLoadFile() {
-        checkAndRequestPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
-
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        fileLoadLauncher.launch(intent);
+        boolean permissionGranted = checkAndRequestPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (permissionGranted) {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("*/*");
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            fileLoadLauncher.launch(intent);
+        }
     }
 
     private void defineFileSaver(Button button) {

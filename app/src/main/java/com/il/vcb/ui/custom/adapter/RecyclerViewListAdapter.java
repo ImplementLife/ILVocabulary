@@ -3,7 +3,7 @@ package com.il.vcb.ui.custom.adapter;
 import android.annotation.SuppressLint;
 import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
-import com.il.vcb.ui.custom.component.BaseView;
+import com.il.vcb.ui.custom.component.BaseViewAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -13,98 +13,98 @@ import java.util.List;
 import static com.il.vcb.ui.custom.adapter.RecyclerViewListAdapter.*;
 
 public class RecyclerViewListAdapter extends RecyclerView.Adapter<Holder> {
-    private final List<Data> data;
+    private final List<ViewDataBinder> viewDataBinders;
 
     public RecyclerViewListAdapter() {
         this(new ArrayList<>());
     }
-    public RecyclerViewListAdapter(List<Data> data) {
-        this.data = data;
+    public RecyclerViewListAdapter(List<ViewDataBinder> viewDataBinders) {
+        this.viewDataBinders = viewDataBinders;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return data.get(position).getViewId();
+        return viewDataBinders.get(position).getViewId();
     }
     @NotNull
     @Override
     public Holder onCreateViewHolder(@NotNull ViewGroup parent, int viewId) {
-        return new Holder(new BaseView(viewId, parent), viewId);
+        return new Holder(new BaseViewAdapter(viewId, parent));
     }
 
     @Override
     public void onBindViewHolder(Holder holder, int position) {
-        data.get(position).bindData(holder.getView());
+        viewDataBinders.get(position).bindData(holder.getView());
     }
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return viewDataBinders.size();
     }
 
     //region Data
-    public void add(Data item) {
-        data.add(item);
-        link(item, data.size());
-        notifyItemInserted(data.size());
+    public void add(ViewDataBinder item) {
+        viewDataBinders.add(item);
+        link(item, viewDataBinders.size());
+        notifyItemInserted(viewDataBinders.size());
     }
 
-    public void add(Data item, int position) {
-        data.add(position, item);
+    public void add(ViewDataBinder item, int position) {
+        viewDataBinders.add(position, item);
         linkAll();
         notifyItemInserted(position);
     }
 
-    public void addAll(List<? extends Data> all) {
-        int size = data.size();
-        data.addAll(all);
+    public void addAll(List<? extends ViewDataBinder> all) {
+        int size = viewDataBinders.size();
+        viewDataBinders.addAll(all);
         linkAll();
         notifyItemRangeInserted(size - 1, all.size());
     }
 
-    public void replaceAll(List<Data> replace) {
+    public void replaceAll(List<ViewDataBinder> replace) {
         clear();
         addAll(replace);
     }
 
     public void clear() {
         unlinkAll();
-        int size = data.size();
-        data.clear();
+        int size = viewDataBinders.size();
+        viewDataBinders.clear();
         notifyItemRangeRemoved(0, size);
     }
 
     public void remove(int position) {
-        unlink(data.get(position));
-        data.remove(position);
+        unlink(viewDataBinders.get(position));
+        viewDataBinders.remove(position);
         notifyItemRemoved(position);
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void sort(Comparator<? super Data> comparator) {
-        data.sort(comparator);
+    public void sort(Comparator<? super ViewDataBinder> comparator) {
+        viewDataBinders.sort(comparator);
         linkAll();
         notifyDataSetChanged();
     }
 
-    private void link(Data item, int position) {
+    private void link(ViewDataBinder item, int position) {
         item.setAdapter(this);
         item.setPosition(position);
     }
 
-    private void unlink(Data item) {
+    private void unlink(ViewDataBinder item) {
         item.setAdapter(null);
         item.setPosition(-1);
     }
 
     private void linkAll() {
-        for (int i = 0; i < data.size(); i++) {
-            link(this.data.get(i), i);
+        for (int i = 0; i < viewDataBinders.size(); i++) {
+            link(this.viewDataBinders.get(i), i);
         }
     }
 
     private void unlinkAll() {
-        for (Data item : data) {
+        for (ViewDataBinder item : viewDataBinders) {
             item.setAdapter(null);
             item.setPosition(-1);
         }
@@ -112,20 +112,20 @@ public class RecyclerViewListAdapter extends RecyclerView.Adapter<Holder> {
 
     //endregion Data
 
-    public List<Data> getData() {
-        return data;
+    public List<ViewDataBinder> getViewDataBinders() {
+        return viewDataBinders;
     }
-    public Data get(int position) {
-        return data.get(position);
+    public ViewDataBinder get(int position) {
+        return viewDataBinders.get(position);
     }
 
-    public static abstract class Data<D> {
+    public static abstract class ViewDataBinder<D> {
         private RecyclerViewListAdapter adapter;
         protected int viewId;
         protected D data;
         private int position = -1;
 
-        public Data(int viewId) {
+        public ViewDataBinder(int viewId) {
             this.viewId = viewId;
         }
 
@@ -154,27 +154,21 @@ public class RecyclerViewListAdapter extends RecyclerView.Adapter<Holder> {
                 adapter.notifyItemChanged(position);
             }
         }
-        public abstract void bindData(BaseView view, D data);
-        public void bindData(BaseView view) {
+        public abstract void bindData(BaseViewAdapter view, D data);
+        public void bindData(BaseViewAdapter view) {
             bindData(view, data);
         }
     }
-    public static class Holder extends RecyclerView.ViewHolder {
-        protected int viewId;
-        private final BaseView view;
+    protected static class Holder extends RecyclerView.ViewHolder {
+        private final BaseViewAdapter view;
 
-        public Holder(BaseView view, int viewId) {
+        public Holder(BaseViewAdapter view) {
             super(view.getRoot());
-            this.viewId = viewId;
             this.view = view;
         }
 
-        public BaseView getView() {
+        public BaseViewAdapter getView() {
             return view;
-        }
-
-        public int getViewId() {
-            return viewId;
         }
     }
 }

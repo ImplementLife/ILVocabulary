@@ -10,21 +10,15 @@ import com.il.vcb.ui.activity.MainActivity;
 
 import java.util.concurrent.CompletableFuture;
 
-public class BaseView {
+public class BaseViewAdapter {
     protected View root;
-    protected LayoutInflater inflater;
 
-    public BaseView(LayoutInflater inflater, int viewId, ViewGroup rootForThis) {
-        this.inflater = inflater;
+    public BaseViewAdapter(LayoutInflater inflater, int viewId, ViewGroup rootForThis) {
         this.root = inflater.inflate(viewId, rootForThis, false);
     }
 
-    public BaseView(int viewId, ViewGroup rootForThis) {
+    public BaseViewAdapter(int viewId, ViewGroup rootForThis) {
         this(LayoutInflater.from(MainActivity.getInstance()), viewId, rootForThis);
-    }
-
-    public LayoutInflater getInflater() {
-        return inflater;
     }
 
     public View getRoot() {
@@ -52,12 +46,16 @@ public class BaseView {
         return root.findViewById(id);
     }
 
-    public void setTextViewById(int id, String text) {
-        ((TextView) findViewById(id)).setText(text);
+    public void setOnClickListener(Runnable action) {
+        getRoot().setOnClickListener(v -> action.run());
     }
 
     public void setOnClickListener(View.OnClickListener listener) {
         getRoot().setOnClickListener(listener);
+    }
+
+    public void setTextViewById(int id, String text) {
+        ((TextView) findViewById(id)).setText(text);
     }
 
     public void setImgResById(int viewId, int resId) {

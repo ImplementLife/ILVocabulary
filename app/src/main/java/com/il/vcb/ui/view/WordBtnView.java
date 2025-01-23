@@ -3,10 +3,10 @@ package com.il.vcb.ui.view;
 import android.widget.TextView;
 import com.il.vcb.R;
 import com.il.vcb.data.jpa.entity.Word;
-import com.il.vcb.ui.custom.adapter.RecyclerViewListAdapter.Data;
-import com.il.vcb.ui.custom.component.BaseView;
+import com.il.vcb.ui.custom.adapter.RecyclerViewListAdapter.ViewDataBinder;
+import com.il.vcb.ui.custom.component.BaseViewAdapter;
 
-public class WordBtnView extends Data<Word> {
+public class WordBtnView extends ViewDataBinder<Word> {
     private Runnable action;
     private String word;
     private boolean enabled;
@@ -16,8 +16,8 @@ public class WordBtnView extends Data<Word> {
     }
 
     @Override
-    public void bindData(BaseView view, Word word) {
-        view.setOnClickListener(v -> {
+    public void bindData(BaseViewAdapter view, Word word) {
+        view.setOnClickListener(() -> {
             if (enabled) {
                 action.run();
             }
