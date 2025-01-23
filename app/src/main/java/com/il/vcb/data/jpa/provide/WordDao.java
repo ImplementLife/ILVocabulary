@@ -3,6 +3,7 @@ package com.il.vcb.data.jpa.provide;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import com.il.vcb.data.jpa.entity.Word;
 
 import java.util.List;
@@ -39,4 +40,16 @@ public interface WordDao extends RestDao<Integer, Word> {
     @Query("SELECT * FROM il_word WHERE id NOT IN (:excludeIds) ORDER BY RANDOM() LIMIT :limit")
     List<Word> getRandomExclude(int limit, List<Integer> excludeIds);
 
+
+    @Query("DELETE FROM il_word")
+    void clearTable();
+
+    @Query("DELETE FROM sqlite_sequence WHERE name = 'il_word'")
+    void resetIdSequence();
+
+    @Transaction
+    default void resetTable() {
+        clearTable();
+        resetIdSequence();
+    }
 }

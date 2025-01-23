@@ -16,10 +16,7 @@ import com.il.vcb.data.jpa.provide.AppDatabase;
 import com.il.vcb.data.jpa.provide.WordDao;
 import com.il.vcb.ui.activity.MainActivity;
 import com.il.vcb.ui.custom.component.BaseFragment;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,20 +66,20 @@ public class SettingsFragment extends BaseFragment {
     private void deleteAll() {
         new AlertDialog.Builder(getContext())
             .setMessage("Are you sure?")
-            .setPositiveButton("Yes", (dialog, which) -> runAsync(wordDao::deleteAll))
+            .setPositiveButton("Yes", (dialog, which) -> runAsync(wordDao::resetTable))
             .setNegativeButton("No", (dialog, which) -> {})
             .show();
     }
 
     private void requestSaveFile() {
         boolean permissionGranted = checkAndRequestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (permissionGranted) {
+//        if (permissionGranted) {
             Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("*/*");
             intent.putExtra(Intent.EXTRA_TITLE, "words.xlsx");
             fileSaverLauncher.launch(intent);
-        }
+//        }
     }
 
     private void requestLoadFile() {
@@ -167,20 +164,35 @@ public class SettingsFragment extends BaseFragment {
     }
 
     private void addWordsFromFile(InputStream inputStream) throws IOException {
-        Workbook workbook = WorkbookFactory.create(inputStream);  // Using WorkbookFactory to create the workbook
+        Workbook workbook = WorkbookFactory.create(inputStream);
         Sheet sheet = workbook.getSheetAt(0);
-        List<Word> lw = new LinkedList<>();
-        for (Row row : sheet) {
+        List<Word> wordsList = new LinkedList<>();
+        for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++) {
+            Row row = sheet.getRow(i);
+            if (row == null) continue;
             Word word = new Word();
             word.setLearnLangWord(row.getCell(0).getStringCellValue().trim());
             word.setNativeLangWord(row.getCell(1).getStringCellValue().trim());
+
+            Cell cell = row.getCell(2);
+            if (cell != null) {
+                try {
+                    word.setCountCompleteRepeats((int) cell.getNumericCellValue());
+                } catch (Exception ignore) {}
+            }
+
+            cell = row.getCell(2);
+            if (cell != null) {
+                try {
+                    word.setCountMistakes((int) cell.getNumericCellValue());
+                } catch (Exception ignore) {}
+            }
             if (isValid(word)) {
-                lw.add(word);
+                wordsList.add(word);
             }
         }
 
-        // Insert all words into the database
-        wordDao.insertAll(lw);
+        wordDao.insertAll(wordsList);
     }
 
     private ContentResolver getContentResolver() {
