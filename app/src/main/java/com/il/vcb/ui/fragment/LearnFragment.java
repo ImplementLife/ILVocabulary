@@ -21,6 +21,7 @@ public class LearnFragment extends BaseFragment {
     private List<ButtonWrapper> buttonWrappers = new ArrayList<>();
     private Map<Integer, ButtonWrapper> buttonWrappersMap = new HashMap<>();
     private ButtonWrapper lastSelectedWrapper = null;
+    private WordBtnView lastSelectedButton = null;
 
     public LearnFragment() {
         super(R.layout.fragment_learn);
@@ -34,20 +35,21 @@ public class LearnFragment extends BaseFragment {
         runAsync(() -> {
             loadWords();
             prepareButtonWrappers();
-            post(() -> {
-                Collections.shuffle(buttonWrappers);
-                List<WordBtnView> learnButtons = buttonWrappers.stream()
-                    .map(e -> e.learnButton)
-                    .collect(Collectors.toList());
+
+            Collections.shuffle(buttonWrappers);
+            List<WordBtnView> learnButtons = buttonWrappers.stream()
+                .map(ButtonWrapper::getLearnButton)
+                .collect(Collectors.toList());
+
+            Collections.shuffle(buttonWrappers);
+            List<WordBtnView> nativeButtons = buttonWrappers.stream()
+                .map(ButtonWrapper::getNativeButton)
+                .collect(Collectors.toList());
+
+            postDelayed(() -> {
                 learnColumn.addAll(learnButtons);
-
-                Collections.shuffle(buttonWrappers);
-
-                List<WordBtnView> nativeButtons = buttonWrappers.stream()
-                    .map(e -> e.nativeButton)
-                    .collect(Collectors.toList());
                 nativeColumn.addAll(nativeButtons);
-            });
+            }, 500);
         });
     }
 
@@ -63,54 +65,98 @@ public class LearnFragment extends BaseFragment {
             WordBtnView learnButton = new WordBtnView();
             learnButton.setText(word.getLearnLangWord());
             learnButton.setOnClickListener(() -> handleButtonClick(wrapper, learnButton));
-            wrapper.learnButton = learnButton;
+            wrapper.setLearnButton(learnButton);
 
             WordBtnView nativeButton = new WordBtnView();
             nativeButton.setText(word.getNativeLangWord());
             nativeButton.setOnClickListener(() -> handleButtonClick(wrapper, nativeButton));
-            wrapper.nativeButton = nativeButton;
+            wrapper.setNativeButton(nativeButton);
 
-            wrapper.index = i;
-            wrapper.word = word;
+            wrapper.setIndex(i);
+            wrapper.setWord(word);
 
             buttonWrappers.add(wrapper);
-            buttonWrappersMap.put(wrapper.index, wrapper);
+            buttonWrappersMap.put(wrapper.getIndex(), wrapper);
         }
     }
 
     private void handleButtonClick(ButtonWrapper wrapper, WordBtnView button) {
         if (lastSelectedWrapper == null) {
             lastSelectedWrapper = wrapper;
-            button.setEnabled(false);
+            button.setStatusSelected();
         } else {
-            if (lastSelectedWrapper.index == wrapper.index) {
-                button.setEnabled(false);
-                int countCompleteRepeats = wrapper.word.getCountCompleteRepeats();
-                wrapper.word.setCountCompleteRepeats(countCompleteRepeats + 1);
-                int countMistakes = wrapper.word.getCountMistakes();
+            if (lastSelectedWrapper.getIndex() == wrapper.getIndex()) {
+                lastSelectedWrapper.getLearnButton().setStatusComplete();
+                lastSelectedWrapper.getNativeButton().setStatusComplete();
+                int countCompleteRepeats = wrapper.getWord().getCountCompleteRepeats();
+                wrapper.getWord().setCountCompleteRepeats(countCompleteRepeats + 1);
+                int countMistakes = wrapper.getWord().getCountMistakes();
                 if (countMistakes > 0) {
-                    wrapper.word.setCountMistakes(countMistakes - 1);
+                    wrapper.getWord().setCountMistakes(countMistakes - 1);
                 }
+                final ButtonWrapper w1 = wrapper;
+                runAsync(() -> wordDao.update(w1.getWord()));
             } else {
-                wrapper = buttonWrappersMap.get(lastSelectedWrapper.index);
-                wrapper.learnButton.setEnabled(true);
-                wrapper.nativeButton.setEnabled(true);
+                wrapper.getLearnButton().setStatusMistake();
+                wrapper.getNativeButton().setStatusMistake();
 
-                int mistakes = wrapper.word.getCountMistakes();
-                wrapper.word.setCountMistakes(mistakes + 1);
+                lastSelectedWrapper.getLearnButton().setStatusMistake();
+                lastSelectedWrapper.getNativeButton().setStatusMistake();
+                final ButtonWrapper w1 = wrapper;
+                final ButtonWrapper w2 = lastSelectedWrapper;
+                postDelayed(() -> {
+                    w1.getLearnButton().setStatusDefault();
+                    w1.getNativeButton().setStatusDefault();
+
+                    w2.getLearnButton().setStatusDefault();
+                    w2.getNativeButton().setStatusDefault();
+                }, 700);
+
+                int mistakes = wrapper.getWord().getCountMistakes();
+                wrapper.getWord().setCountMistakes(mistakes + 1);
+                runAsync(() -> {
+                    wordDao.update(w1.getWord());
+                    wordDao.update(w2.getWord());
+                });
             }
-            ButtonWrapper finalWrapper = wrapper;
-            runAsync(() -> {
-                wordDao.update(finalWrapper.word);
-            });
             lastSelectedWrapper = null;
         }
     }
 
     private static class ButtonWrapper {
-        WordBtnView learnButton;
-        WordBtnView nativeButton;
-        Word word;
-        int index;
+        private WordBtnView learnButton;
+        private WordBtnView nativeButton;
+        private Word word;
+        private int index;
+
+        public WordBtnView getNativeButton() {
+            return nativeButton;
+        }
+        public void setNativeButton(WordBtnView nativeButton) {
+            this.nativeButton = nativeButton;
+        }
+
+        public WordBtnView getLearnButton() {
+            return learnButton;
+        }
+        public void setLearnButton(WordBtnView learnButton) {
+            this.learnButton = learnButton;
+        }
+
+        public Word getWord() {
+            return word;
+        }
+
+        public void setWord(Word word) {
+            this.word = word;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
     }
 }

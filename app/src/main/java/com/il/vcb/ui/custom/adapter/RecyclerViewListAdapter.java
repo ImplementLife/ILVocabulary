@@ -1,8 +1,11 @@
 package com.il.vcb.ui.custom.adapter;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.res.Resources;
 import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
+import com.il.vcb.ui.activity.MainActivity;
 import com.il.vcb.ui.custom.component.BaseViewAdapter;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,6 +16,7 @@ import java.util.List;
 import static com.il.vcb.ui.custom.adapter.RecyclerViewListAdapter.*;
 
 public class RecyclerViewListAdapter extends RecyclerView.Adapter<Holder> {
+    private Context context;
     private final List<ViewDataBinder> viewDataBinders;
 
     public RecyclerViewListAdapter() {
@@ -20,6 +24,7 @@ public class RecyclerViewListAdapter extends RecyclerView.Adapter<Holder> {
     }
     public RecyclerViewListAdapter(List<ViewDataBinder> viewDataBinders) {
         this.viewDataBinders = viewDataBinders;
+        context = MainActivity.getInstance();
     }
 
     @Override
@@ -34,7 +39,9 @@ public class RecyclerViewListAdapter extends RecyclerView.Adapter<Holder> {
 
     @Override
     public void onBindViewHolder(Holder holder, int position) {
-        viewDataBinders.get(position).bindData(holder.getView());
+        ViewDataBinder viewDataBinder = viewDataBinders.get(position);
+        viewDataBinder.setContext(context);
+        viewDataBinder.bindData(holder.getViewAdapter());
     }
 
     @Override
@@ -120,6 +127,7 @@ public class RecyclerViewListAdapter extends RecyclerView.Adapter<Holder> {
     }
 
     public static abstract class ViewDataBinder<D> {
+        private Context context;
         private RecyclerViewListAdapter adapter;
         protected int viewId;
         protected D data;
@@ -158,17 +166,29 @@ public class RecyclerViewListAdapter extends RecyclerView.Adapter<Holder> {
         public void bindData(BaseViewAdapter view) {
             bindData(view, data);
         }
+
+        public Context getContext() {
+            return context;
+        }
+
+        private void setContext(Context context) {
+            this.context = context;
+        }
+
+        public Resources getResources() {
+            return context.getResources();
+        }
     }
     protected static class Holder extends RecyclerView.ViewHolder {
-        private final BaseViewAdapter view;
+        private final BaseViewAdapter viewAdapter;
 
         public Holder(BaseViewAdapter view) {
             super(view.getRoot());
-            this.view = view;
+            this.viewAdapter = view;
         }
 
-        public BaseViewAdapter getView() {
-            return view;
+        public BaseViewAdapter getViewAdapter() {
+            return viewAdapter;
         }
     }
 }
