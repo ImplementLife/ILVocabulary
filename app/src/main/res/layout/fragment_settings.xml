@@ -37,4 +37,25 @@
             android:layout_marginTop="8dp"
             android:layout_marginStart="8dp"
     />
+    <TextView
+            android:id="@+id/tv_repeats_count_title"
+            android:text="Repeats Count:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_export"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+    />
+    <EditText
+            android:id="@+id/et_n_repeats_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_repeats_count_title"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+    />
 </androidx.constraintlayout.widget.ConstraintLayout>

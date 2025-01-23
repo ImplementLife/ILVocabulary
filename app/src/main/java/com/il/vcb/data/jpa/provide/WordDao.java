@@ -30,8 +30,8 @@ public interface WordDao extends RestDao<Integer, Word> {
     @Query("SELECT * FROM il_word WHERE countCompleteRepeats = 0 ORDER BY RANDOM() LIMIT :limit")
     List<Word> getRandomWithZeroRepeats(int limit);
 
-    @Query("SELECT * FROM il_word WHERE countCompleteRepeats >= 1 AND countCompleteRepeats <= 3 ORDER BY RANDOM() LIMIT :limit")
-    List<Word> getRandomWithLimitedRepeats(int limit);
+    @Query("SELECT * FROM il_word WHERE countCompleteRepeats >= 1 AND countCompleteRepeats <= :repeatsCount ORDER BY RANDOM() LIMIT :limit")
+    List<Word> getRandomWithLimitedRepeats(int repeatsCount, int limit);
 
     @Query("SELECT * FROM il_word ORDER BY RANDOM() LIMIT :limit")
     List<Word> getRandom(int limit);

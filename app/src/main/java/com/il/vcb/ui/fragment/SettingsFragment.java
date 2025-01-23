@@ -3,9 +3,12 @@ package com.il.vcb.ui.fragment;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.widget.Button;
+import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import com.il.vcb.R;
 import com.il.vcb.data.jpa.entity.Word;
@@ -49,6 +52,18 @@ public class SettingsFragment extends BaseFragment {
 
         Button btnExport = findViewById(R.id.btn_export);
         defineFileSaver(btnExport);
+
+        TextView etRepeatsCount = findViewById(R.id.et_n_repeats_count);
+        etRepeatsCount.setText(Integer.toString(getIntProperty("repeats_count", 3)));
+        etRepeatsCount.setOnEditorActionListener((v, e, e2) -> {
+            try {
+                int i = Integer.parseInt(etRepeatsCount.getText().toString().trim());
+                setProperty("repeats_count", i);
+            } catch (Exception ignore) {
+                return false;
+            }
+            return true;
+        });
     }
 
     private void deleteAll() {
@@ -170,6 +185,32 @@ public class SettingsFragment extends BaseFragment {
 
     private ContentResolver getContentResolver() {
         return Objects.requireNonNull(getActivity()).getContentResolver();
+    }
+
+
+
+    public int getIntProperty(String tag, int defaultValue) {
+        SharedPreferences sp = getContext().getSharedPreferences("il_settings", Context.MODE_PRIVATE);
+        return sp.getInt(tag, defaultValue);
+    }
+    public int getIntProperty(String tag) {
+        return getIntProperty(tag, 0);
+    }
+
+    public boolean getBoolProperty(String tag) {
+        SharedPreferences sp = getContext().getSharedPreferences("il_settings", Context.MODE_PRIVATE);
+        return sp.getBoolean(tag,true);
+    }
+
+    public void setProperty(String tag, boolean value) {
+        SharedPreferences.Editor editor = getContext().getSharedPreferences("il_settings", Context.MODE_PRIVATE).edit();
+        editor.putBoolean(tag, value);
+        editor.apply();
+    }
+    public void setProperty(String tag, int value) {
+        SharedPreferences.Editor editor = getContext().getSharedPreferences("il_settings", Context.MODE_PRIVATE).edit();
+        editor.putInt(tag, value);
+        editor.apply();
     }
 
 }
