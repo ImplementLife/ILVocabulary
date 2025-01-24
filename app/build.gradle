@@ -33,7 +33,7 @@ android {
     applicationVariants.all { variant ->
         if (variant.buildType.name == "debug") {
             variant.outputs.all { output ->
-                def newName = "vocab_${defaultConfig.versionName}-debug.apk"
+                def newName = "lexicon_${defaultConfig.versionName}-debug.apk"
                 output.outputFileName = newName
             }
         }
