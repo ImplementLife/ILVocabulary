@@ -1,0 +1,65 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "6294c9f8e7c63fcf3fc1053d37b06c09",
+    "entities": [
+      {
+        "tableName": "il_word",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`learnLangWord` TEXT, `nativeLangWord` TEXT, `countCompleteRepeats` INTEGER NOT NULL, `countMistakes` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT, `serverId` INTEGER DEFAULT -1)",
+        "fields": [
+          {
+            "fieldPath": "learnLangWord",
+            "columnName": "learnLangWord",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "nativeLangWord",
+            "columnName": "nativeLangWord",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "countCompleteRepeats",
+            "columnName": "countCompleteRepeats",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "countMistakes",
+            "columnName": "countMistakes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "serverId",
+            "columnName": "serverId",
+            "affinity": "INTEGER",
+            "notNull": false,
+            "defaultValue": "-1"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6294c9f8e7c63fcf3fc1053d37b06c09')"
+    ]
+  }
+}

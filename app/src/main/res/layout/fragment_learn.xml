@@ -21,7 +21,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
     >
-        <com.il.vcb.ui.custom.component.CustomRecyclerView
+        <com.il.lexicon.ui.custom.component.CustomRecyclerView
                 android:id="@+id/learnColumn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -29,7 +29,7 @@
                 android:orientation="vertical"
                 android:layout_marginEnd="4dp"
         />
-        <com.il.vcb.ui.custom.component.CustomRecyclerView
+        <com.il.lexicon.ui.custom.component.CustomRecyclerView
                 android:id="@+id/nativeColumn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
