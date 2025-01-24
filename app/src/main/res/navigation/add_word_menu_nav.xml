@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/main_menu_nav.xml"
+            app:startDestination="@id/fragment_add_word_menu"
+>
+
+    <fragment android:id="@+id/fragment_add_word_menu"
+              android:name="com.il.lexicon.ui.fragment.AddWordMenuFragment"
+              android:label="fragment_add_word_menu"
+              tools:layout="@layout/fragment_add_word_menu"
+    />
+    <fragment android:id="@+id/fragment_add_word_simple_one"
+              android:name="com.il.lexicon.ui.fragment.AddWordSimpleOneFragment"
+              android:label="fragment_add_word_simple_one"
+              tools:layout="@layout/fragment_add_word_simple_one"
+    />
+</navigation>
