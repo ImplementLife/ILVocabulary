@@ -21,6 +21,9 @@ public interface WordDao extends RestDao<Integer, Word> {
     @Query("SELECT COUNT(*) FROM il_word")
     int getCount();
 
+    @Query("SELECT COUNT(*) FROM il_word WHERE countCompleteRepeats > :repeatsCount")
+    int getCount(int repeatsCount);
+
     @Query("DELETE FROM il_word")
     void deleteAll();
 

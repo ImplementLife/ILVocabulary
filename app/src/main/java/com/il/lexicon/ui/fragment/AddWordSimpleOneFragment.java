@@ -2,7 +2,6 @@ package com.il.lexicon.ui.fragment;
 
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import com.il.lexicon.R;
 import com.il.lexicon.data.jpa.entity.Word;
 import com.il.lexicon.data.jpa.provide.AppDatabase;
@@ -16,9 +15,6 @@ public class AddWordSimpleOneFragment extends NavFragment {
 
     private EditText etLearnWord;
     private EditText etNativeWord;
-    private Button btnNew;
-    private Button btnSave;
-    private TextView tvCountOfWords;
 
     public AddWordSimpleOneFragment() {
         super(R.layout.fragment_add_word_simple_one);
@@ -28,37 +24,36 @@ public class AddWordSimpleOneFragment extends NavFragment {
     protected void init() {
         etLearnWord = findViewById(R.id.et_learn_word);
         etNativeWord = findViewById(R.id.et_native_word);
-        btnNew = findViewById(R.id.btn_new);
-        btnSave = findViewById(R.id.btn_save);
-        tvCountOfWords = findViewById(R.id.tv_count_of_words);
 
-        btnNew.setOnClickListener(v -> {
+        Button btnBack = findViewById(R.id.btn_back);
+        Button btnSaveAndBack = findViewById(R.id.btn_new);
+        Button btnSaveAndNew = findViewById(R.id.btn_save);
+
+        btnBack.setOnClickListener(v -> {
+            navigateUp();
+        });
+
+        btnSaveAndBack.setOnClickListener(v -> {
+            if (save()) return;
+            navigateUp();
+        });
+        btnSaveAndNew.setOnClickListener(v -> {
+            if (save()) return;
+
             etLearnWord.setText("");
             etNativeWord.setText("");
         });
-        btnSave.setOnClickListener(v -> {
-            Word word = new Word();
-            word.setLearnLangWord(etLearnWord.getText().toString().trim());
-            word.setNativeLangWord(etNativeWord.getText().toString().trim());
-            if (!WordValidService.isValid(word)) return;
-            runAsync(() -> {
-                wordDao.insert(word);
-                updateCountOfWords();
-            });
 
-            etLearnWord.setText("");
-            etNativeWord.setText("");
-        });
-
-        updateCountOfWords();
     }
 
-    private void updateCountOfWords() {
+    private boolean save() {
+        Word word = new Word();
+        word.setLearnLangWord(etLearnWord.getText().toString().trim());
+        word.setNativeLangWord(etNativeWord.getText().toString().trim());
+        if (!WordValidService.isValid(word)) return true;
         runAsync(() -> {
-            Integer count = wordDao.getCount();
-            post(() -> {
-                tvCountOfWords.setText(count.toString());
-            });
+            wordDao.insert(word);
         });
+        return false;
     }
 }
