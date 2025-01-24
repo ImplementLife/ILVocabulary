@@ -51,6 +51,7 @@ public class WordBtnView extends ViewDataBinder<Word> {
             color
         );
         tvWord.setTextColor(color);
+        this.enabled = true;
     }
 
     public void setStatusSelected() {
@@ -60,6 +61,7 @@ public class WordBtnView extends ViewDataBinder<Word> {
             color
         );
         tvWord.setTextColor(color);
+        this.enabled = false;
     }
 
     public void setStatusComplete() {
