@@ -200,30 +200,4 @@ public class AddWordMenuFragment extends NavFragment {
     private ContentResolver getContentResolver() {
         return Objects.requireNonNull(getActivity()).getContentResolver();
     }
-
-
-
-    public int getIntProperty(String tag, int defaultValue) {
-        SharedPreferences sp = getContext().getSharedPreferences("il_settings", Context.MODE_PRIVATE);
-        return sp.getInt(tag, defaultValue);
-    }
-    public int getIntProperty(String tag) {
-        return getIntProperty(tag, 0);
-    }
-
-    public boolean getBoolProperty(String tag) {
-        SharedPreferences sp = getContext().getSharedPreferences("il_settings", Context.MODE_PRIVATE);
-        return sp.getBoolean(tag,true);
-    }
-
-    public void setProperty(String tag, boolean value) {
-        SharedPreferences.Editor editor = getContext().getSharedPreferences("il_settings", Context.MODE_PRIVATE).edit();
-        editor.putBoolean(tag, value);
-        editor.apply();
-    }
-    public void setProperty(String tag, int value) {
-        SharedPreferences.Editor editor = getContext().getSharedPreferences("il_settings", Context.MODE_PRIVATE).edit();
-        editor.putInt(tag, value);
-        editor.apply();
-    }
 }
