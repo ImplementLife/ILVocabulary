@@ -2,12 +2,15 @@ package com.il.lexicon.data.jpa.entity;
 
 import androidx.room.Entity;
 
+import java.util.Date;
+
 @Entity(tableName = "il_word")
 public class Word extends EntityWithId {
     private String learnLangWord;
     private String nativeLangWord;
     private int countCompleteRepeats;
     private int countMistakes;
+    private Date addDate;
 
     public Word() {
     }
@@ -42,5 +45,13 @@ public class Word extends EntityWithId {
 
     public void setCountMistakes(int countMistakes) {
         this.countMistakes = countMistakes;
+    }
+
+    public Date getAddDate() {
+        return addDate;
+    }
+
+    public void setAddDate(Date addDate) {
+        this.addDate = addDate;
     }
 }

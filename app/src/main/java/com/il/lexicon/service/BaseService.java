@@ -3,7 +3,7 @@ package com.il.lexicon.service;
 import android.content.ContentResolver;
 import android.content.Context;
 
-public class BaseService {
+public abstract class BaseService {
     private final Context context;
 
     public BaseService(Context context) {

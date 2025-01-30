@@ -10,6 +10,8 @@ import com.il.lexicon.service.valid.WordValidService;
 import com.il.lexicon.ui.activity.MainActivity;
 import com.il.lexicon.ui.custom.component.NavFragment;
 
+import java.util.Date;
+
 public class AddWordSimpleOneFragment extends NavFragment {
     private static final WordDao wordDao = AppDatabase.getInstance(MainActivity.getInstance()).getWordDao();
 
@@ -50,6 +52,7 @@ public class AddWordSimpleOneFragment extends NavFragment {
         Word word = new Word();
         word.setLearnLangWord(etLearnWord.getText().toString().trim());
         word.setNativeLangWord(etNativeWord.getText().toString().trim());
+        word.setAddDate(new Date());
         if (!WordValidService.isValid(word)) return true;
         runAsync(() -> {
             wordDao.insert(word);

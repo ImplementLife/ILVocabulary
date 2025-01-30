@@ -107,7 +107,7 @@ public class AddWordMenuFragment extends NavFragment {
                 button.setEnabled(false);
 
                 runAsync(() -> {
-                    wordExcelService.ImportFromFile(fileUri);
+                    wordExcelService.importFromFile(fileUri);
                     post(() -> button.setEnabled(true));
                 });
             }
