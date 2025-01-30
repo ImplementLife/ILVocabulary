@@ -28,9 +28,12 @@ public class WordLearnLevelService {
         int levelSize = 10;
         int repeatsCount = getIntProperty("repeats_count", 3);
         Set<Word> set = new HashSet<>();
+
+        List<Word> randomLatestWords = wordDao.getRandomLatestWords(repeatsCount, 4);
         List<Word> mistakes = wordDao.getRandomWithCountMistakesMoreThanZero(2);
         List<Word> zeroRepeats = wordDao.getRandomWithZeroRepeats(2);
 
+        set.addAll(randomLatestWords);
         set.addAll(mistakes);
         set.addAll(zeroRepeats);
 

@@ -42,6 +42,12 @@ public interface WordDao extends RestDao<Integer, Word> {
     @Query("SELECT * FROM il_word WHERE id NOT IN (:excludeIds) ORDER BY RANDOM() LIMIT :limit")
     List<Word> getRandomExclude(int limit, List<Integer> excludeIds);
 
+    @Query("SELECT * FROM il_word WHERE id IN " +
+        "(SELECT id FROM il_word WHERE countCompleteRepeats <= :repeatsCount " +
+        "ORDER BY addDate DESC LIMIT 10) " +
+        "ORDER BY RANDOM() LIMIT :limit")
+    List<Word> getRandomLatestWords(int repeatsCount, int limit);
+
 
     @Query("DELETE FROM il_word")
     void clearTable();
