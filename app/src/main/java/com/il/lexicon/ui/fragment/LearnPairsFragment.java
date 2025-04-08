@@ -21,7 +21,7 @@ public class LearnPairsFragment extends BaseFragment {
     private List<ButtonWrapper> buttonWrappers = new ArrayList<>();
     private Map<Integer, ButtonWrapper> buttonWrappersMap = new HashMap<>();
     private ButtonWrapper lastSelectedWrapper = null;
-    private WordBtnView lastSelectedButton = null;
+    private boolean isLearnLangColumnButtonSelected;
 
     public LearnPairsFragment() {
         super(R.layout.fragment_learn_pairs);
@@ -64,12 +64,12 @@ public class LearnPairsFragment extends BaseFragment {
 
             WordBtnView learnButton = new WordBtnView();
             learnButton.setText(word.getLearnLangWord());
-            learnButton.setOnClickListener(() -> handleButtonClick(wrapper, learnButton));
+            learnButton.setOnClickListener(() -> handleButtonClick(wrapper, learnButton, true));
             wrapper.setLearnButton(learnButton);
 
             WordBtnView nativeButton = new WordBtnView();
             nativeButton.setText(word.getNativeLangWord());
-            nativeButton.setOnClickListener(() -> handleButtonClick(wrapper, nativeButton));
+            nativeButton.setOnClickListener(() -> handleButtonClick(wrapper, nativeButton, false));
             wrapper.setNativeButton(nativeButton);
 
             wrapper.setIndex(i);
@@ -80,11 +80,20 @@ public class LearnPairsFragment extends BaseFragment {
         }
     }
 
-    private void handleButtonClick(ButtonWrapper wrapper, WordBtnView button) {
+
+    private void handleButtonClick(ButtonWrapper wrapper, WordBtnView button, boolean isLearnLangColumn) {
         if (lastSelectedWrapper == null) {
             lastSelectedWrapper = wrapper;
             button.setStatusSelected();
+            isLearnLangColumnButtonSelected = isLearnLangColumn;
         } else {
+            if (isLearnLangColumnButtonSelected == isLearnLangColumn) {
+                lastSelectedWrapper.getLearnButton().setStatusDefault();
+                lastSelectedWrapper.getNativeButton().setStatusDefault();
+                lastSelectedWrapper = null;
+                handleButtonClick(wrapper, button, isLearnLangColumn);
+                return;
+            }
             if (lastSelectedWrapper.getIndex() == wrapper.getIndex()) {
                 lastSelectedWrapper.getLearnButton().setStatusComplete();
                 lastSelectedWrapper.getNativeButton().setStatusComplete();
