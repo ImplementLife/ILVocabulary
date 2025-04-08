@@ -21,5 +21,5 @@
             android:id="@+id/nav_learn"
             android:name="com.il.lexicon.ui.fragment.LearnFragment"
             android:label="@string/nav_bar_title_title_learn"
-            tools:layout="@layout/fragment_learn"/>
+            tools:layout="@layout/fragment_learn_menu"/>
 </navigation>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/main_menu_nav.xml"
+            app:startDestination="@id/fragment_learn_menu"
+>
+
+    <fragment android:id="@+id/fragment_learn_menu"
+              android:name="com.il.lexicon.ui.fragment.LearnMenuFragment"
+              android:label="fragment_learn_menu"
+              tools:layout="@layout/fragment_learn_menu"
+    />
+    <fragment android:id="@+id/fragment_learn_quiz"
+              android:name="com.il.lexicon.ui.fragment.LearnQuizFragment"
+              android:label="fragment_learn_quiz"
+              tools:layout="@layout/fragment_learn_quiz"
+    />
+    <fragment android:id="@+id/fragment_learn_pairs"
+              android:name="com.il.lexicon.ui.fragment.LearnPairsFragment"
+              android:label="fragment_learn_pairs"
+              tools:layout="@layout/fragment_learn_quiz"
+    />
+
+</navigation>
