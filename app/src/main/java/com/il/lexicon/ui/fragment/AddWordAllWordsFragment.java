@@ -31,6 +31,7 @@ public class AddWordAllWordsFragment extends NavFragment {
                 .map(e -> {
                     AddWordAllWordsListItemView addWordAllWordsListItemView = new AddWordAllWordsListItemView();
                     addWordAllWordsListItemView.setData(e);
+                    addWordAllWordsListItemView.setNavigate(navController);
                     return addWordAllWordsListItemView;
                 })
                 .collect(Collectors.toList());

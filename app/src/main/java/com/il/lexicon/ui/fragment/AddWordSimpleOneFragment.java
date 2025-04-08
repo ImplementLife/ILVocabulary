@@ -1,5 +1,6 @@
 package com.il.lexicon.ui.fragment;
 
+import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import com.il.lexicon.R;
@@ -17,6 +18,9 @@ public class AddWordSimpleOneFragment extends NavFragment {
 
     private EditText etLearnWord;
     private EditText etNativeWord;
+
+    private Word word;
+    private boolean isUpdate = false;
 
     public AddWordSimpleOneFragment() {
         super(R.layout.fragment_add_word_simple_one);
@@ -44,18 +48,38 @@ public class AddWordSimpleOneFragment extends NavFragment {
 
             etLearnWord.setText("");
             etNativeWord.setText("");
+
+            isUpdate = false;
         });
 
     }
 
+    @Override
+    protected void argumentProcessing(Bundle args) {
+        int word_id = args.getInt("word_id", -1);
+        if (word_id > -1) {
+            isUpdate = true;
+            runAsync(() -> {
+                word = wordDao.findById(word_id);
+                post(() -> {
+                    etLearnWord.setText(word.getLearnLangWord());
+                    etNativeWord.setText(word.getNativeLangWord());
+                });
+            });
+        }
+    }
     private boolean save() {
-        Word word = new Word();
+        if (!isUpdate) word = new Word();
         word.setLearnLangWord(etLearnWord.getText().toString().trim());
         word.setNativeLangWord(etNativeWord.getText().toString().trim());
         word.setAddDate(new Date());
         if (!WordValidService.isValid(word)) return true;
         runAsync(() -> {
-            wordDao.insert(word);
+            if (isUpdate) {
+                wordDao.update(word);
+            } else {
+                wordDao.insert(word);
+            }
         });
         return false;
     }
