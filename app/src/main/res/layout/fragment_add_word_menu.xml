@@ -7,6 +7,41 @@
         android:layout_height="match_parent"
         tools:context=".ui.fragment.AddWordMenuFragment"
 >
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/stat_container"
+    >
+        <TextView
+                android:id="@+id/tv_total_count"
+                android:text="{text: total words count}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+        />
+        <TextView
+                android:id="@+id/tv_learned_count"
+                android:text="{text: learned words count}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/tv_total_count"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+        />
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <Button
             android:id="@+id/btn_clear_db"
             android:text="Clear data"
@@ -59,39 +94,17 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
     />
-    <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+    <Button
+            android:id="@+id/btn_all_words"
+            android:text="All words"
+            android:gravity="start|center_vertical"
+            app:layout_constraintTop_toBottomOf="@+id/btn_add_one"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:id="@+id/stat_container"
-    >
-        <TextView
-                android:id="@+id/tv_total_count"
-                android:text="{text: total words count}"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-        />
-        <TextView
-                android:id="@+id/tv_learned_count"
-                android:text="{text: learned words count}"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/tv_total_count"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-        />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+    />
 </androidx.constraintlayout.widget.ConstraintLayout>

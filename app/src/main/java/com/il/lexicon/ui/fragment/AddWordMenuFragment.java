@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
@@ -55,6 +56,9 @@ public class AddWordMenuFragment extends NavFragment {
 
         Button btnExport = findViewById(R.id.btn_export);
         defineFileSaver(btnExport);
+
+        Button btnAllWords = findViewById(R.id.btn_all_words);
+        btnAllWords.setOnClickListener(v -> navigate(R.id.fragment_add_word_list));
     }
 
     private void deleteAll() {

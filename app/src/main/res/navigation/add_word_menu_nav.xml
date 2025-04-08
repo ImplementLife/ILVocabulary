@@ -16,4 +16,8 @@
               android:label="fragment_add_word_simple_one"
               tools:layout="@layout/fragment_add_word_simple_one"
     />
+    <fragment android:id="@+id/fragment_add_word_list"
+              android:name="com.il.lexicon.ui.fragment.AddWordAllWordsFragment"
+              android:label="fragment_add_word_list"
+              tools:layout="@layout/fragment__add_word__all_words"/>
 </navigation>

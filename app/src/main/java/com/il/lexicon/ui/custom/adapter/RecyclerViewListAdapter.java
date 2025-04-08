@@ -150,7 +150,6 @@ public class RecyclerViewListAdapter extends RecyclerView.Adapter<Holder> {
         }
         public void setData(D data) {
             this.data = data;
-            callBind();
         }
 
         public void setPosition(int position) {
