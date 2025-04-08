@@ -69,7 +69,7 @@ public class RecyclerViewListAdapter extends RecyclerView.Adapter<Holder> {
         notifyItemRangeInserted(size - 1, all.size());
     }
 
-    public void replaceAll(List<ViewDataBinder> replace) {
+    public void replaceAll(List<? extends ViewDataBinder> replace) {
         clear();
         addAll(replace);
     }

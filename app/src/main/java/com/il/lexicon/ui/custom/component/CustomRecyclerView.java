@@ -61,7 +61,7 @@ public class CustomRecyclerView extends RecyclerView {
         adapter.addAll(all);
     }
 
-    public void replaceAll(List<ViewDataBinder> replace) {
+    public void replaceAll(List<? extends ViewDataBinder> replace) {
         adapter.replaceAll(replace);
     }
 

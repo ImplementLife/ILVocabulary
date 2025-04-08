@@ -18,6 +18,9 @@ public interface WordDao extends RestDao<Integer, Word> {
     @Query("SELECT * FROM il_word")
     List<Word> getAll();
 
+    @Query("SELECT * FROM il_word WHERE learnLangWord LIKE '%' || :string || '%' OR nativeLangWord LIKE '%' || :string || '%' ORDER BY learnLangWord ASC")
+    List<Word> search(String string);
+
     @Query("SELECT COUNT(*) FROM il_word")
     int getCount();
 
